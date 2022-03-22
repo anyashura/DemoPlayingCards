@@ -14,7 +14,6 @@ struct PlayingCards: CustomStringConvertible {
     var rank : Rank
     var suit : Suit
 
-
     enum Rank :  CustomStringConvertible {
         case ace
         case face(String)

@@ -11,10 +11,12 @@ import UIKit
 
 class PlayingcardView: UIView {
     
-    var rank : Int = 12 { didSet { setNeedsDisplay(); setNeedsLayout()}}
-    var suit : String = "♥️" { didSet { setNeedsDisplay(); setNeedsLayout()}}
-    var isFacedUp : Bool = false { didSet { setNeedsDisplay(); setNeedsLayout()}}
-    
+    private var rank : Int = 12 { didSet { setNeedsDisplay(); setNeedsLayout()}}
+    private var suit : String = "♥️" { didSet { setNeedsDisplay(); setNeedsLayout()}}
+    private var isFacedUp : Bool = false { didSet { setNeedsDisplay(); setNeedsLayout()}}
+    private var cornerString : NSAttributedString {
+        return centredAttributedString(rankString+"\n"+suit, fontSize: cornerFontSize)
+    }
     
     private lazy var upperLeftCornerLabel = createCornerLabel()
     private lazy var lowerRightCornerLabel = createCornerLabel()
@@ -24,6 +26,21 @@ class PlayingcardView: UIView {
         label.numberOfLines = 0
         addSubview(label)
         return label
+    }
+    
+    private func configureCornerLabel(_ label: UILabel) {
+        label.attributedText = cornerString
+        label.frame.size = CGSize.zero
+        label.sizeToFit()
+        label.isHidden = !isFacedUp
+    }
+    
+    private func centredAttributedString(_ string : String, fontSize : CGFloat) -> NSAttributedString {
+        var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
+        font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        return NSAttributedString(string: string, attributes: [.paragraphStyle: paragraphStyle, .font : font])
     }
 
 //    override func draw(_ rect: CGRect) {
@@ -50,13 +67,6 @@ class PlayingcardView: UIView {
         setNeedsLayout()
     }
     
-    private func configureCornerLabel(_ label: UILabel) {
-        label.attributedText = cornerString
-        label.frame.size = CGSize.zero
-        label.sizeToFit()
-        label.isHidden = !isFacedUp
-    }
-    
     override func draw(_ rect: CGRect) {
         let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
         roundedRect.addClip()
@@ -73,19 +83,6 @@ class PlayingcardView: UIView {
             }
         }
     }
-    
-    func centredAttributedString(_ string : String, fontSize : CGFloat) -> NSAttributedString {
-        var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
-        font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        return NSAttributedString(string: string, attributes: [.paragraphStyle: paragraphStyle, .font : font])
-    }
-    
-    var cornerString : NSAttributedString {
-        return centredAttributedString(rankString+"\n"+suit, fontSize: cornerFontSize)
-    }
-
 }
 
 extension PlayingcardView {
@@ -121,7 +118,6 @@ extension CGRect {
     var leftHalf: CGRect {
         return CGRect(x: minX, y: minY, width: width/2 , height: height)
     }
-
     var rightHalf: CGRect {
         return CGRect(x: midX, y: minY, width: width/2, height: height)
     }
@@ -129,7 +125,6 @@ extension CGRect {
     func inset(by size: CGSize) -> CGRect {
         return insetBy(dx: size.width, dy: size.height)
     }
-
     func zoom(by scale: CGFloat) -> CGRect {
         let newWidth = width * scale
         let newHeight = height * scale

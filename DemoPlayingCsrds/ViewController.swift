@@ -9,9 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var deck = CardDeck()
+    private(set) var deck = CardDeck()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         for _ in 1...10 {
@@ -20,7 +19,5 @@ class ViewController: UIViewController {
             }
         }
     }
-
-
 }
 

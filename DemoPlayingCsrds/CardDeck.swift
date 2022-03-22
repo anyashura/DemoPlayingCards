@@ -9,7 +9,7 @@ import Foundation
 
 struct CardDeck {
    
-    var cards = [PlayingCards]()
+    private(set) var cards = [PlayingCards]()
     
         init() {
             for rank in PlayingCards.Rank.all {
@@ -25,7 +25,6 @@ struct CardDeck {
         } else {
             return nil
         }
-        
     }
 }
 
